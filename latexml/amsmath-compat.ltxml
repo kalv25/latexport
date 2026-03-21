@@ -1,0 +1,14 @@
+# -*- CPERL -*-
+# LaTeXML compatibility stubs for amsmath internal commands.
+#
+# These are TeX-level typesetting flags that have no HTML equivalent.
+# Stubbing them out prevents "undefined macro" errors during conversion.
+package LaTeXML::Package;
+use strict;
+use LaTeXML::Package;
+
+# \ctagsplit@true is set via \makeatletter to enable equation-tag splitting
+# in amsmath's aligned environments. No HTML equivalent; define as no-op.
+DefMacroI('\ctagsplit@true', undef, Tokens());
+
+1;

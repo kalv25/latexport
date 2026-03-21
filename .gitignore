@@ -1,0 +1,64 @@
+# Output
+output/
+
+# LaTeX build artifacts
+build/
+
+# Python
+__pycache__/
+*.py[oc]
+dist/
+wheels/
+*.egg-info
+.venv
+.coverage
+
+# uv
+uv.lock
+
+# LaTeX intermediate files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fls
+*.fdb_latexmk
+*.idx
+*.ind
+*.lof
+*.lot
+*.out
+*.toc
+*.log
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+
+# Archives
+*.zip
+*.tar
+*.gz
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.tmp
+
+# SSL
+cert.pem
+key.pem
+
+# AI
+.claude

@@ -1,0 +1,17 @@
+# -*- CPERL -*-
+# LaTeXML binding: redefine \emph as \mathit inside math mode.
+#
+# --preload runs before LaTeX.pool.ltxml, so \AtBeginDocument is not yet
+# defined at that point.  Instead we use LaTeXML's Perl-level AtBeginDocument
+# hook, which fires when \begin{document} is processed (after all packages and
+# pools are loaded), ensuring we override whatever \emph was last defined to be.
+# At that point \renewcommand and \ifmmode are fully available.
+package LaTeXML::Package;
+use strict;
+use LaTeXML::Package;
+
+AtBeginDocument(sub {
+    RawTeX('\renewcommand{\emph}[1]{\ifmmode\mathit{#1}\else\textit{#1}\fi}');
+});
+
+1;
