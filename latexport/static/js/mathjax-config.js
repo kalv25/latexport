@@ -4,7 +4,7 @@ MathJax = {
       MathJax.startup.defaultReady();
       // Respect the saved MathJax preference — suppress the initial typeset
       // pass if the user had previously turned math rendering off.
-      if (localStorage.getItem('texport-mathjax') === 'false') {
+      if (localStorage.getItem('latexport-mathjax') === 'false') {
         MathJax.startup.promise = MathJax.startup.promise
           .then(() => MathJax.typesetClear([document.body]));
       }

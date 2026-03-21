@@ -1,6 +1,6 @@
 // ── i18n ──────────────────────────────────────────────────────────────
 // Override any of these strings before this script loads, e.g.:
-//   <script>window.texportI18n = { widthLabel: 'Breite' };</script>
+//   <script>window.latexportI18n = { widthLabel: 'Breite' };</script>
 
 const i18n = Object.assign({
     widthLabel:       'Width',
@@ -12,16 +12,16 @@ const i18n = Object.assign({
     mathAriaOff:      'MathJax rendering off',
     goToTop:          '\u2191',
     goToTopAria:      'Go to top of page',
-}, window.texportI18n || {});
+}, window.latexportI18n || {});
 
 // ── Constants ─────────────────────────────────────────────────────────
-const PAGE_WIDTH_KEY    = 'texport-page-width';
+const PAGE_WIDTH_KEY    = 'latexport-page-width';
 const PAGE_WIDTH_DEFAULT = 80;
 const PAGE_WIDTH_MIN    = 40;
 const PAGE_WIDTH_MAX    = 160;
 const PAGE_WIDTH_STEP   = 10;
 
-const MATHJAX_KEY       = 'texport-mathjax';
+const MATHJAX_KEY       = 'latexport-mathjax';
 
 // ── Page width ────────────────────────────────────────────────────────
 
@@ -60,7 +60,7 @@ async function setMathJaxEnabled(enabled) {
 
 function buildToolbar(currentWidth, mathEnabled) {
     const aside = document.createElement('aside');
-    aside.id = 'texport-toolbar';
+    aside.id = 'latexport-toolbar';
     aside.setAttribute('aria-label', i18n.toolbarAriaLabel);
 
     // Width control
