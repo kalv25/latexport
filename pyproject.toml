@@ -1,6 +1,6 @@
 [project]
 name = "latexport"
-version = "2026.3.0"
+version = "2026.3.1"
 description = "Convert LaTeX documents to accessible HTML with PDF output"
 authors = [{ name = "Kana Nadarajan", email = "clean.wood0319@fastmail.com" }]
 readme = "README.md"
