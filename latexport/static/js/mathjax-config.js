@@ -1,3 +1,5 @@
+/* latexport @VERSION@ */
+
 MathJax = {
   startup: {
     ready() {

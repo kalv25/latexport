@@ -1,3 +1,5 @@
+/* latexport @VERSION@ */
+
 // ── i18n ──────────────────────────────────────────────────────────────
 // Override any of these strings before this script loads, e.g.:
 //   <script>window.latexportI18n = { widthLabel: 'Breite' };</script>

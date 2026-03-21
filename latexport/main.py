@@ -9,6 +9,7 @@ import textwrap
 from pathlib import Path
 from bs4 import BeautifulSoup
 
+from . import __version__
 from .config import ENCODING, LATEXML_DIR, OUTPUT_DIR, STATIC_DIR, SRC_QED_SYMBOL
 
 logger = logging.getLogger(__name__)
@@ -241,12 +242,17 @@ def process_file(
 
 
 def _seed_output_dir(output_dir: Path, static_dir: Path = STATIC_DIR) -> None:
-    """Copy static assets into the output directory, skipping existing files."""
+    """Copy static assets into the output directory, stamping the package version."""
     if not static_dir.is_dir():
         logger.warning("Static directory not found: %s", static_dir)
         return
     output_dir.mkdir(parents=True, exist_ok=True)
     _ = shutil.copytree(static_dir, output_dir, dirs_exist_ok=True)
+    for ext in ("*.js", "*.css"):
+        for dest in output_dir.rglob(ext):
+            text = dest.read_text(encoding=ENCODING)
+            if "@VERSION@" in text:
+                dest.write_text(text.replace("@VERSION@", __version__), encoding=ENCODING)
     logger.info("Seeded output directory from %s", static_dir)
 
 

@@ -1,3 +1,5 @@
+/* latexport 2026.3.2 */
+
 MathJax = {
   startup: {
     ready() {
