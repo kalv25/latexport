@@ -349,6 +349,14 @@ LaTeXML does not support all LaTeX packages and document structures. Known cases
 
 In these cases pdflatex still produces a correct PDF; only the HTML output is affected. Consider restructuring such documents to use a standard class (`article`, `report`, `book`) for full LaTeXML compatibility.
 
+## Further Reading
+
+Resources that informed this project:
+
+- [Using LaTeXML to convert your LaTeX files to accessible HTML](https://hackmd.io/@UoL-IWG/latexml) — a practical guide to LaTeXML from the University of London's Inclusive Working Group.
+- [Make Your LaTeX Documents Accessible](https://www.ams.org/journals/notices/202301/rnoti-p68.pdf) — Volker RH Sorge, *Notices of the AMS*, January 2023. Motivation for accessible LaTeX output.
+- [Tagged and Accessible PDF with LaTeX — revisited](https://pdfa.org/presentation/tagged-and-accessible-pdf-with-latex-revisited/) — PDF Association presentation on producing tagged, accessible PDFs from LaTeX.
+
 ## Contributing
 
 Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, code style, and how to submit a pull request.
