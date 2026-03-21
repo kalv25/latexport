@@ -129,12 +129,14 @@ function buildToolbar(currentWidth, mathEnabled) {
     mathBtn.id = 'mathjax-toggle';
     mathBtn.setAttribute('aria-pressed', String(mathEnabled));
     mathBtn.setAttribute('aria-label', mathEnabled ? i18n.mathAriaOn : i18n.mathAriaOff);
+    mathBtn.title = mathEnabled ? i18n.mathAriaOn : i18n.mathAriaOff;
     mathBtn.textContent = mathEnabled ? i18n.mathOn : i18n.mathOff;
 
     mathBtn.addEventListener('click', () => {
         const nowEnabled = mathBtn.getAttribute('aria-pressed') !== 'true';
         mathBtn.setAttribute('aria-pressed', String(nowEnabled));
         mathBtn.setAttribute('aria-label', nowEnabled ? i18n.mathAriaOn : i18n.mathAriaOff);
+        mathBtn.title = nowEnabled ? i18n.mathAriaOn : i18n.mathAriaOff;
         mathBtn.textContent = nowEnabled ? i18n.mathOn : i18n.mathOff;
         setMathJaxEnabled(nowEnabled);
     });
