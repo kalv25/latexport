@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from bs4 import BeautifulSoup, Tag
 
-from texport.embed_assets import (
+from latexport.embed_assets import (
     _charset_from_content_type,  # pyright: ignore[reportPrivateUsage]
     _tag_remote_assets,  # pyright: ignore[reportPrivateUsage]
     build_parser,
@@ -118,7 +118,7 @@ class TestFetchAsset:
         with pytest.raises(FileNotFoundError):
             _ = fetch_asset("does_not_exist.css", tmp_path)
 
-    @patch("texport.embed_assets.fetch_remote")
+    @patch("latexport.embed_assets.fetch_remote")
     def test_dispatches_to_fetch_remote_for_http(self, mock_fetch_remote: MagicMock):
         mock_fetch_remote.return_value = "/* remote css */"
 
@@ -127,7 +127,7 @@ class TestFetchAsset:
         mock_fetch_remote.assert_called_once_with("http://example.com/style.css")
         assert result == "/* remote css */"
 
-    @patch("texport.embed_assets.fetch_remote")
+    @patch("latexport.embed_assets.fetch_remote")
     def test_dispatches_to_fetch_remote_for_https(self, mock_fetch_remote: MagicMock):
         mock_fetch_remote.return_value = "var x = 1;"
 

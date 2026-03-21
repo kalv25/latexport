@@ -1,4 +1,4 @@
-# Contributing to texport
+# Contributing to latexport
 
 Thank you for your interest in contributing! This document covers everything you need to get started.
 
@@ -19,12 +19,12 @@ Thank you for your interest in contributing! This document covers everything you
 
 ```bash
 git clone <repository-url>
-cd texport
+cd latexport
 uv sync
 uv pip install -e .
 ```
 
-`uv sync` installs all runtime and dev dependencies. `uv pip install -e .` registers the CLI entry points (`texport`, `texport-index`, `texport-clean`, `texport-bundle`) in the virtual environment.
+`uv sync` installs all runtime and dev dependencies. `uv pip install -e .` registers the CLI entry points (`latexport`, `latexport-index`, `latexport-clean`, `latexport-bundle`) in the virtual environment.
 
 ---
 
@@ -35,7 +35,7 @@ uv pip install -e .
 uv run pytest
 
 # With coverage report
-uv run pytest --cov=texport --cov-report=term-missing
+uv run pytest --cov=latexport --cov-report=term-missing
 
 # Single file
 uv run pytest tests/test_main.py
@@ -65,23 +65,23 @@ uv run pyright
 ## 4. Project structure
 
 ```
-texport/                  ← Python package
+latexport/                ← Python package
   __init__.py             ← version
-  config.py               ← all tunable constants; reads [tool.texport] from pyproject.toml
-  main.py                 ← texport CLI: LaTeX → HTML + PDF pipeline
-  create_main_index.py    ← texport-index CLI: generates navigation index
-  embed_assets.py         ← texport-bundle CLI: inlines CSS/JS into a standalone file
+  config.py               ← all tunable constants; reads [tool.latexport] from pyproject.toml
+  main.py                 ← latexport CLI: LaTeX → HTML + PDF pipeline
+  create_main_index.py    ← latexport-index CLI: generates navigation index
+  embed_assets.py         ← latexport-bundle CLI: inlines CSS/JS into a standalone file
   zip_project.py          ← developer utility: creates a timestamped project archive
   static/                 ← default web assets (CSS, JS); seeded into output/ on every run
   templates/              ← HTML templates
   latexml/                ← LaTeXML binding files (.ltxml); all loaded automatically
-tests/                    ← pytest test suite (mirrors texport/ module structure)
+tests/                    ← pytest test suite (mirrors latexport/ module structure)
 examples/                 ← example .tex sources and attribution
 ```
 
 ### Adding a LaTeXML binding
 
-Create a `.ltxml` file in `texport/latexml/`. It is automatically loaded on every `latexmlc` invocation — no changes to `main.py` needed.
+Create a `.ltxml` file in `latexport/latexml/`. It is automatically loaded on every `latexmlc` invocation — no changes to `main.py` needed.
 
 ### Adding a new CLI command
 
@@ -107,7 +107,7 @@ For significant changes, open an issue first to discuss the approach before inve
 
 Please [open an issue](../../issues) and include:
 
-- texport version (`uv run texport --version` once implemented, or check `pyproject.toml`)
+- latexport version (`uv run latexport --version` once implemented, or check `pyproject.toml`)
 - Python version (`python --version`)
 - LaTeXML version (`latexmlc --VERSION`)
 - A minimal `.tex` file that reproduces the problem (if applicable)

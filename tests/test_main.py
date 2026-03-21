@@ -8,8 +8,8 @@ from unittest.mock import patch
 import pytest
 from bs4 import BeautifulSoup
 
-from texport.config import ENCODING, SRC_QED_SYMBOL
-from texport.main import (
+from latexport.config import ENCODING, SRC_QED_SYMBOL
+from latexport.main import (
     _create_include_subdirs,  # pyright: ignore[reportPrivateUsage]
     _detect_bibliography,  # pyright: ignore[reportPrivateUsage]
     _has_cite_commands,  # pyright: ignore[reportPrivateUsage]
@@ -162,7 +162,7 @@ class TestAddCustomCssAndJs:
         assert not target.exists()
 
     def test_dry_run_prints_dry_run_prefix(self, tmp_path: Path, caplog: pytest.LogCaptureFixture):
-        with caplog.at_level(logging.INFO, logger="texport.main"):
+        with caplog.at_level(logging.INFO, logger="latexport.main"):
             _ = add_custom_css_and_js(str(tmp_path / "x.html"), dry_run=True)
         assert "[DRY-RUN]" in caplog.text
 
@@ -171,7 +171,7 @@ class TestAddCustomCssAndJs:
         assert result is False
 
     def test_missing_file_prints_to_stderr(self, tmp_path: Path, caplog: pytest.LogCaptureFixture):
-        with caplog.at_level(logging.ERROR, logger="texport.main"):
+        with caplog.at_level(logging.ERROR, logger="latexport.main"):
             _ = add_custom_css_and_js(str(tmp_path / "missing.html"))
         assert caplog.records
 
@@ -412,7 +412,7 @@ class TestUpdateStylesheetLinks:
         f = doc_dir / "index.html"
         _ = f.write_text(self._html_with_links("style.css"), encoding=ENCODING)
 
-        with caplog.at_level(logging.INFO, logger="texport.main"):
+        with caplog.at_level(logging.INFO, logger="latexport.main"):
             _ = update_stylesheet_links(f, css_dir, dry_run=True)
         assert "[DRY-RUN]" in caplog.text
 
@@ -428,7 +428,7 @@ class TestProcessFile:
         assert result is True
 
     def test_dry_run_prints_dry_run_prefix_and_command(self, caplog: pytest.LogCaptureFixture):
-        with caplog.at_level(logging.INFO, logger="texport.main"):
+        with caplog.at_level(logging.INFO, logger="latexport.main"):
             _ = process_file("echo hello world", dry_run=True)
         assert "[DRY-RUN]" in caplog.text
         assert "echo hello world" in caplog.text
@@ -455,7 +455,7 @@ class TestProcessFile:
             mock_run.return_value = subprocess.CompletedProcess(
                 args=["failing_cmd"], returncode=1, stdout="", stderr="detailed error text"
             )
-            with caplog.at_level(logging.ERROR, logger="texport.main"):
+            with caplog.at_level(logging.ERROR, logger="latexport.main"):
                 _ = process_file("failing_cmd")
         assert "detailed error text" in caplog.text
 
@@ -468,7 +468,7 @@ class TestProcessFile:
     def test_missing_binary_prints_advisory_to_stderr(self, caplog: pytest.LogCaptureFixture):
         with patch("subprocess.run") as mock_run:
             mock_run.side_effect = FileNotFoundError()
-            with caplog.at_level(logging.ERROR, logger="texport.main"):
+            with caplog.at_level(logging.ERROR, logger="latexport.main"):
                 _ = process_file("binary_that_does_not_exist")
         assert "not found" in caplog.text
 
@@ -683,7 +683,7 @@ class TestSeedOutputDir:
     def test_does_nothing_when_static_dir_missing(self, tmp_path, caplog):
         out = tmp_path / "out"
         import logging
-        with caplog.at_level(logging.WARNING, logger="texport.main"):
+        with caplog.at_level(logging.WARNING, logger="latexport.main"):
             _seed_output_dir(out, tmp_path / "nonexistent")
         assert not out.exists()
 

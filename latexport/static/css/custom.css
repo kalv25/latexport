@@ -30,7 +30,7 @@ body {
 
 /* ── Settings toolbar ─────────────────────────────────────────────── */
 
-#texport-toolbar {
+#latexport-toolbar {
     position: fixed;
     top: 1rem;
     right: 1rem;
@@ -47,19 +47,19 @@ body {
     color: CanvasText;
 }
 
-#texport-toolbar .toolbar-sep {
+#latexport-toolbar .toolbar-sep {
     width: 1px;
     height: 1.2em;
     background: var(--ui-border);
     flex-shrink: 0;
 }
 
-#texport-toolbar label {
+#latexport-toolbar label {
     white-space: nowrap;
     cursor: default;
 }
 
-#texport-toolbar input[type="range"] {
+#latexport-toolbar input[type="range"] {
     width: 5rem;
     cursor: pointer;
     accent-color: Highlight;
@@ -73,7 +73,7 @@ body {
     white-space: nowrap;
 }
 
-#texport-toolbar button {
+#latexport-toolbar button {
     background: transparent;
     border: 1px solid var(--ui-border);
     border-radius: 0.3rem;
@@ -84,15 +84,15 @@ body {
     white-space: nowrap;
 }
 
-#texport-toolbar button:hover {
+#latexport-toolbar button:hover {
     background: var(--ui-bg-hover);
 }
 
-#texport-toolbar button[aria-pressed="true"] {
+#latexport-toolbar button[aria-pressed="true"] {
     background: var(--ui-bg-active);
 }
 
-#texport-toolbar button:focus-visible {
+#latexport-toolbar button:focus-visible {
     outline: 2px solid Highlight;
     outline-offset: 2px;
 }

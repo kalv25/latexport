@@ -5,11 +5,11 @@ _PKG = Path(__file__).parent
 
 
 def _load_user_config() -> dict[str, str]:
-    """Read [tool.texport] from pyproject.toml in the current working directory."""
+    """Read [tool.latexport] from pyproject.toml in the current working directory."""
     try:
         with open("pyproject.toml", "rb") as f:
             data = tomllib.load(f)
-        raw = data.get("tool", {}).get("texport", {})
+        raw = data.get("tool", {}).get("latexport", {})
         return {k: str(v) for k, v in raw.items()}
     except Exception:
         return {}

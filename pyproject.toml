@@ -17,10 +17,10 @@ Issues     = "https://github.com/kalv25/texport/issues"
 Changelog  = "https://github.com/kalv25/texport/blob/main/CHANGELOG.md"
 
 [project.scripts]
-texport        = "texport.main:process_files"
-texport-index  = "texport.create_main_index:main"
-texport-clean  = "texport.main:clean_logs"
-texport-bundle = "texport.embed_assets:main"
+latexport        = "latexport.main:process_files"
+latexport-index  = "latexport.create_main_index:main"
+latexport-clean  = "latexport.main:clean_logs"
+latexport-bundle = "latexport.embed_assets:main"
 
 [dependency-groups]
 dev = [
@@ -32,10 +32,10 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["texport*"]
+include = ["latexport*"]
 
 [tool.setuptools.package-data]
-texport = ["static/**/*", "templates/**/*", "latexml/**/*"]
+latexport = ["static/**/*", "templates/**/*", "latexml/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -42,7 +42,7 @@ def create_zip(output_name: str | None = None) -> Path:
 
     Args:
         output_name: Optional name for the zip file. If not provided,
-                     uses 'texport-YYYYMMDD-HHMMSS.zip'.
+                     uses 'latexport-YYYYMMDD-HHMMSS.zip'.
 
     Returns:
         Path to the created zip file.
@@ -51,7 +51,7 @@ def create_zip(output_name: str | None = None) -> Path:
 
     if output_name is None:
         timestamp = datetime.now().strftime("%Y-%b-%d_%H%M%S")
-        output_name = f"texport-{timestamp}.zip"
+        output_name = f"latexport-{timestamp}.zip"
 
     output_path = project_root / output_name
 
