@@ -343,6 +343,10 @@ LaTeXML does not support all LaTeX packages and document structures. Known cases
 
 In these cases pdflatex still produces a correct PDF; only the HTML output is affected. Consider restructuring such documents to use a standard class (`article`, `report`, `book`) for full LaTeXML compatibility.
 
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) for setup instructions, code style, and how to submit a pull request.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
