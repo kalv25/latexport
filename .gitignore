@@ -1,5 +1,6 @@
 # Output
 output/
+!examples/output/
 
 # LaTeX build artifacts
 build/
