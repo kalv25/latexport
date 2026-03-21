@@ -8,9 +8,14 @@ from unittest.mock import patch
 import pytest
 from bs4 import BeautifulSoup
 
-from config import ENCODING, SRC_QED_SYMBOL
-from main import (
+from texport.config import ENCODING, SRC_QED_SYMBOL
+from texport.main import (
+    _create_include_subdirs,  # pyright: ignore[reportPrivateUsage]
+    _detect_bibliography,  # pyright: ignore[reportPrivateUsage]
+    _has_cite_commands,  # pyright: ignore[reportPrivateUsage]
     _inject_resources,  # pyright: ignore[reportPrivateUsage]
+    _remove_empty_subdirs,  # pyright: ignore[reportPrivateUsage]
+    _seed_output_dir,  # pyright: ignore[reportPrivateUsage]
     add_custom_css_and_js,
     process_file,
     replace_qed_symbol,
@@ -157,7 +162,7 @@ class TestAddCustomCssAndJs:
         assert not target.exists()
 
     def test_dry_run_prints_dry_run_prefix(self, tmp_path: Path, caplog: pytest.LogCaptureFixture):
-        with caplog.at_level(logging.INFO, logger="main"):
+        with caplog.at_level(logging.INFO, logger="texport.main"):
             _ = add_custom_css_and_js(str(tmp_path / "x.html"), dry_run=True)
         assert "[DRY-RUN]" in caplog.text
 
@@ -166,7 +171,7 @@ class TestAddCustomCssAndJs:
         assert result is False
 
     def test_missing_file_prints_to_stderr(self, tmp_path: Path, caplog: pytest.LogCaptureFixture):
-        with caplog.at_level(logging.ERROR, logger="main"):
+        with caplog.at_level(logging.ERROR, logger="texport.main"):
             _ = add_custom_css_and_js(str(tmp_path / "missing.html"))
         assert caplog.records
 
@@ -407,7 +412,7 @@ class TestUpdateStylesheetLinks:
         f = doc_dir / "index.html"
         _ = f.write_text(self._html_with_links("style.css"), encoding=ENCODING)
 
-        with caplog.at_level(logging.INFO, logger="main"):
+        with caplog.at_level(logging.INFO, logger="texport.main"):
             _ = update_stylesheet_links(f, css_dir, dry_run=True)
         assert "[DRY-RUN]" in caplog.text
 
@@ -423,7 +428,7 @@ class TestProcessFile:
         assert result is True
 
     def test_dry_run_prints_dry_run_prefix_and_command(self, caplog: pytest.LogCaptureFixture):
-        with caplog.at_level(logging.INFO, logger="main"):
+        with caplog.at_level(logging.INFO, logger="texport.main"):
             _ = process_file("echo hello world", dry_run=True)
         assert "[DRY-RUN]" in caplog.text
         assert "echo hello world" in caplog.text
@@ -450,7 +455,7 @@ class TestProcessFile:
             mock_run.return_value = subprocess.CompletedProcess(
                 args=["failing_cmd"], returncode=1, stdout="", stderr="detailed error text"
             )
-            with caplog.at_level(logging.ERROR, logger="main"):
+            with caplog.at_level(logging.ERROR, logger="texport.main"):
                 _ = process_file("failing_cmd")
         assert "detailed error text" in caplog.text
 
@@ -463,7 +468,7 @@ class TestProcessFile:
     def test_missing_binary_prints_advisory_to_stderr(self, caplog: pytest.LogCaptureFixture):
         with patch("subprocess.run") as mock_run:
             mock_run.side_effect = FileNotFoundError()
-            with caplog.at_level(logging.ERROR, logger="main"):
+            with caplog.at_level(logging.ERROR, logger="texport.main"):
                 _ = process_file("binary_that_does_not_exist")
         assert "not found" in caplog.text
 
@@ -475,3 +480,219 @@ class TestProcessFile:
             _ = process_file("latexmlc --format=html5 input.tex")
             call_args, _ = mock_run.call_args  # pyright: ignore[reportAny]
             assert call_args[0] == ["latexmlc", "--format=html5", "input.tex"]
+
+
+# ---------------------------------------------------------------------------
+# _detect_bibliography
+# ---------------------------------------------------------------------------
+
+class TestDetectBibliography:
+    def _tex(self, tmp_path: Path, content: str) -> Path:
+        f = tmp_path / "doc.tex"
+        f.write_text(content, encoding="utf-8")
+        return f
+
+    def test_returns_biber_for_biblatex_package(self, tmp_path):
+        f = self._tex(tmp_path, r"\usepackage{biblatex}")
+        assert _detect_bibliography(f) == "biber"
+
+    def test_returns_biber_for_biblatex_with_options(self, tmp_path):
+        f = self._tex(tmp_path, r"\usepackage[backend=biber]{biblatex}")
+        assert _detect_bibliography(f) == "biber"
+
+    def test_returns_biber_for_addbibresource(self, tmp_path):
+        f = self._tex(tmp_path, r"\addbibresource{refs.bib}")
+        assert _detect_bibliography(f) == "biber"
+
+    def test_returns_bibtex_for_bibliography_command(self, tmp_path):
+        f = self._tex(tmp_path, r"\bibliography{refs}")
+        assert _detect_bibliography(f) == "bibtex"
+
+    def test_returns_none_when_no_bibliography(self, tmp_path):
+        f = self._tex(tmp_path, r"\section{Intro} No bibliography here.")
+        assert _detect_bibliography(f) is None
+
+    def test_returns_none_on_oserror(self, tmp_path):
+        assert _detect_bibliography(tmp_path / "nonexistent.tex") is None
+
+    def test_biblatex_takes_priority_over_bibliography(self, tmp_path):
+        # Both \usepackage{biblatex} and \bibliography present — biber wins (first match)
+        f = self._tex(tmp_path, "\\usepackage{biblatex}\n\\bibliography{refs}")
+        assert _detect_bibliography(f) == "biber"
+
+
+# ---------------------------------------------------------------------------
+# _has_cite_commands
+# ---------------------------------------------------------------------------
+
+class TestHasCiteCommands:
+    def _tex(self, tmp_path: Path, content: str) -> Path:
+        f = tmp_path / "doc.tex"
+        f.write_text(content, encoding="utf-8")
+        return f
+
+    def test_returns_true_for_cite(self, tmp_path):
+        assert _has_cite_commands(self._tex(tmp_path, r"\cite{key}"))
+
+    def test_returns_true_for_citep(self, tmp_path):
+        assert _has_cite_commands(self._tex(tmp_path, r"\citep{key}"))
+
+    def test_returns_true_for_parencite(self, tmp_path):
+        assert _has_cite_commands(self._tex(tmp_path, r"\parencite{key}"))
+
+    def test_returns_true_for_textcite(self, tmp_path):
+        assert _has_cite_commands(self._tex(tmp_path, r"\textcite{key}"))
+
+    def test_returns_true_for_footcite(self, tmp_path):
+        assert _has_cite_commands(self._tex(tmp_path, r"\footcite{key}"))
+
+    def test_returns_true_for_autocite(self, tmp_path):
+        assert _has_cite_commands(self._tex(tmp_path, r"\autocite{key}"))
+
+    def test_returns_true_for_cite_with_optional_arg(self, tmp_path):
+        assert _has_cite_commands(self._tex(tmp_path, r"\cite[p.~5]{key}"))
+
+    def test_returns_false_for_inline_bibliography(self, tmp_path):
+        content = "\\begin{thebibliography}{99}\n\\bibitem{key} Author.\n\\end{thebibliography}"
+        assert not _has_cite_commands(self._tex(tmp_path, content))
+
+    def test_returns_false_when_no_cite_commands(self, tmp_path):
+        assert not _has_cite_commands(self._tex(tmp_path, r"\section{Intro}"))
+
+    def test_returns_false_on_oserror(self, tmp_path):
+        assert not _has_cite_commands(tmp_path / "nonexistent.tex")
+
+    def test_inline_bibliography_overrides_cite_commands(self, tmp_path):
+        # \begin{thebibliography} present → always False even with \cite
+        content = "\\cite{key}\n\\begin{thebibliography}{99}\\end{thebibliography}"
+        assert not _has_cite_commands(self._tex(tmp_path, content))
+
+
+# ---------------------------------------------------------------------------
+# _create_include_subdirs
+# ---------------------------------------------------------------------------
+
+class TestCreateIncludeSubdirs:
+    def _tex(self, tmp_path: Path, content: str) -> Path:
+        f = tmp_path / "main.tex"
+        f.write_text(content, encoding="utf-8")
+        return f
+
+    def test_creates_subdir_for_include_with_path(self, tmp_path):
+        out = tmp_path / "output"
+        out.mkdir()
+        _create_include_subdirs(self._tex(tmp_path, r"\include{notes/chapter1}"), out)
+        assert (out / "notes").is_dir()
+
+    def test_does_not_create_dir_for_flat_include(self, tmp_path):
+        out = tmp_path / "output"
+        out.mkdir()
+        _create_include_subdirs(self._tex(tmp_path, r"\include{chapter1}"), out)
+        # No subdirectory should be created (parent is ".")
+        assert not (out / "chapter1").exists()
+
+    def test_creates_multiple_subdirs(self, tmp_path):
+        out = tmp_path / "output"
+        out.mkdir()
+        content = "\\include{notes/ch1}\n\\include{appendix/a}"
+        _create_include_subdirs(self._tex(tmp_path, content), out)
+        assert (out / "notes").is_dir()
+        assert (out / "appendix").is_dir()
+
+    def test_handles_missing_tex_file_gracefully(self, tmp_path):
+        out = tmp_path / "output"
+        out.mkdir()
+        # Should not raise
+        _create_include_subdirs(tmp_path / "nonexistent.tex", out)
+
+    def test_creates_nested_subdirs(self, tmp_path):
+        out = tmp_path / "output"
+        out.mkdir()
+        _create_include_subdirs(self._tex(tmp_path, r"\include{part1/notes/ch1}"), out)
+        assert (out / "part1" / "notes").is_dir()
+
+
+# ---------------------------------------------------------------------------
+# _remove_empty_subdirs
+# ---------------------------------------------------------------------------
+
+class TestRemoveEmptySubdirs:
+    def test_removes_empty_subdirectory(self, tmp_path):
+        empty = tmp_path / "empty"
+        empty.mkdir()
+        _remove_empty_subdirs(tmp_path)
+        assert not empty.exists()
+
+    def test_does_not_remove_non_empty_subdir(self, tmp_path):
+        non_empty = tmp_path / "non_empty"
+        non_empty.mkdir()
+        (non_empty / "file.txt").write_text("data")
+        _remove_empty_subdirs(tmp_path)
+        assert non_empty.exists()
+
+    def test_removes_nested_empty_subdirs(self, tmp_path):
+        nested = tmp_path / "a" / "b"
+        nested.mkdir(parents=True)
+        _remove_empty_subdirs(tmp_path)
+        assert not (tmp_path / "a").exists()
+
+    def test_does_not_remove_output_dir_itself(self, tmp_path):
+        _remove_empty_subdirs(tmp_path)
+        assert tmp_path.exists()
+
+    def test_keeps_partially_populated_parent(self, tmp_path):
+        parent = tmp_path / "parent"
+        parent.mkdir()
+        (parent / "file.txt").write_text("data")
+        empty_child = parent / "empty"
+        empty_child.mkdir()
+        _remove_empty_subdirs(tmp_path)
+        assert parent.exists()      # not removed — has a file
+        assert not empty_child.exists()
+
+
+# ---------------------------------------------------------------------------
+# _seed_output_dir
+# ---------------------------------------------------------------------------
+
+class TestSeedOutputDir:
+    def test_creates_output_dir_when_missing(self, tmp_path):
+        static = tmp_path / "static"
+        static.mkdir()
+        out = tmp_path / "out"
+        _seed_output_dir(out, static)
+        assert out.is_dir()
+
+    def test_copies_files_from_static_dir(self, tmp_path):
+        static = tmp_path / "static"
+        static.mkdir()
+        (static / "style.css").write_text("body {}")
+        out = tmp_path / "out"
+        _seed_output_dir(out, static)
+        assert (out / "style.css").read_text() == "body {}"
+
+    def test_copies_subdirectory_structure(self, tmp_path):
+        static = tmp_path / "static"
+        css = static / "css"
+        css.mkdir(parents=True)
+        (css / "custom.css").write_text("*{}")
+        out = tmp_path / "out"
+        _seed_output_dir(out, static)
+        assert (out / "css" / "custom.css").read_text() == "*{}"
+
+    def test_does_nothing_when_static_dir_missing(self, tmp_path, caplog):
+        out = tmp_path / "out"
+        import logging
+        with caplog.at_level(logging.WARNING, logger="texport.main"):
+            _seed_output_dir(out, tmp_path / "nonexistent")
+        assert not out.exists()
+
+    def test_overwrites_existing_files_on_reseed(self, tmp_path):
+        static = tmp_path / "static"
+        static.mkdir()
+        (static / "style.css").write_text("new content")
+        out = tmp_path / "out"
+        out.mkdir()
+        (out / "style.css").write_text("old content")
+        _seed_output_dir(out, static)
+        assert (out / "style.css").read_text() == "new content"

@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from config import ENCODING
-from create_main_index import (
+from texport.config import ENCODING
+from texport.create_main_index import (
     create_main_index_page,
     discover_index_files,
     generate_links_html,

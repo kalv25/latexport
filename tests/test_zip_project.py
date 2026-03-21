@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from zip_project import should_exclude, create_zip
+from texport.zip_project import should_exclude, create_zip
 
 
 # ---------------------------------------------------------------------------
@@ -153,13 +153,13 @@ class TestCreateZip:
         result = create_zip("_test_texport_contents.zip")
         cleanup_zip.append(result)
         with zipfile.ZipFile(result) as zf:
-            assert "main.py" in zf.namelist()
+            assert "texport/main.py" in zf.namelist()
 
     def test_zip_contains_config_py(self, cleanup_zip: list[Path]):
         result = create_zip("_test_texport_config.zip")
         cleanup_zip.append(result)
         with zipfile.ZipFile(result) as zf:
-            assert "config.py" in zf.namelist()
+            assert "texport/config.py" in zf.namelist()
 
     def test_zip_contains_pyproject_toml(self, cleanup_zip: list[Path]):
         result = create_zip("_test_texport_pyproject.zip")

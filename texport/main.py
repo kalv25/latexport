@@ -9,7 +9,7 @@ import textwrap
 from pathlib import Path
 from bs4 import BeautifulSoup
 
-from config import ENCODING, LATEXML_DIR, OUTPUT_DIR, STATIC_DIR, SRC_QED_SYMBOL
+from .config import ENCODING, LATEXML_DIR, OUTPUT_DIR, STATIC_DIR, SRC_QED_SYMBOL
 
 logger = logging.getLogger(__name__)
 
@@ -535,4 +535,3 @@ def clean_logs() -> int:
 
 if __name__ == "__main__":
     sys.exit(process_files())
-

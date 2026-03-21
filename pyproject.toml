@@ -10,9 +10,10 @@ dependencies = [
 ]
 
 [project.scripts]
-texport = "main:process_files"
-texport-index = "create_main_index:main"
-texport-clean = "main:clean_logs"
+texport        = "texport.main:process_files"
+texport-index  = "texport.create_main_index:main"
+texport-clean  = "texport.main:clean_logs"
+texport-bundle = "texport.embed_assets:main"
 
 [dependency-groups]
 dev = [
@@ -24,7 +25,10 @@ dev = [
 ]
 
 [tool.setuptools]
-py-modules = ["main", "config", "create_main_index", "embed_assets", "zip_project"]
+packages = ["texport"]
+
+[tool.setuptools.package-data]
+texport = ["static/**/*", "templates/**/*", "latexml/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

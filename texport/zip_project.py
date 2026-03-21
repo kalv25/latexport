@@ -47,7 +47,7 @@ def create_zip(output_name: str | None = None) -> Path:
     Returns:
         Path to the created zip file.
     """
-    project_root = Path(__file__).parent
+    project_root = Path(__file__).parent.parent
 
     if output_name is None:
         timestamp = datetime.now().strftime("%Y-%b-%d_%H%M%S")
