@@ -62,3 +62,6 @@ key.pem
 
 # AI
 .claude
+
+# Internal docs
+SPECS.md
