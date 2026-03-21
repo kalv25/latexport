@@ -6,6 +6,14 @@ Versions follow [CalVer](https://calver.org/): `YYYY.MM.micro`.
 
 ---
 
+## 2026.3.2 — 2026-03-21
+
+### Added
+- Live example demos published to GitHub Pages at https://kalv25.github.io/latexport/.
+- GitHub Actions workflow (`deploy-pages.yml`) to auto-deploy `examples/output` on every push to `main`.
+
+---
+
 ## 2026.3.0 — 2026-03-21
 
 ### Added

@@ -193,6 +193,8 @@ TEMPLATE_PATH = Path("templates/main_index_template.html")
 
 ## Examples
 
+Live demos are published at **https://kalv25.github.io/latexport/**.
+
 ### Single standalone file — `testmath.tex`
 
 Source: [`latex3/latex2e`](https://github.com/latex3/latex2e) — © American Mathematical Society / LaTeX Project, [LPPL 1.3c](https://www.latex-project.org/lppl/lppl-1-3c).
@@ -212,6 +214,8 @@ Output:
 examples/output/latex2e-testmath/index.html
 examples/output/latex2e-testmath/testmath.pdf
 ```
+
+Live: https://kalv25.github.io/latexport/latex2e-testmath/
 
 ---
 
@@ -235,6 +239,8 @@ Output:
 examples/output/hermish-proofs-notes/index.html
 examples/output/hermish-proofs-notes/main.pdf
 ```
+
+Live: https://kalv25.github.io/latexport/hermish-proofs-notes/
 
 ---
 
