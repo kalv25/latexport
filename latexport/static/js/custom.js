@@ -47,9 +47,11 @@ async function setMathJaxEnabled(enabled) {
     try {
         await MathJax.startup.promise;
         if (enabled) {
+            MathJax.startup.document.menu?.enable?.();
             await MathJax.typesetPromise([document.body]);
         } else {
             MathJax.typesetClear([document.body]);
+            MathJax.startup.document.menu?.disable?.();
         }
     } catch (_) {
         // MathJax not available or not yet fully initialised
@@ -187,7 +189,10 @@ window.addEventListener('load', () => {
     // If MathJax was disabled in a previous session, clear it once it loads
     if (!isMathJaxEnabled() && typeof MathJax !== 'undefined') {
         MathJax.startup.promise
-            .then(() => MathJax.typesetClear([document.body]))
+            .then(() => {
+                MathJax.typesetClear([document.body]);
+                MathJax.startup.document.menu?.disable?.();
+            })
             .catch(() => {});
     }
 });

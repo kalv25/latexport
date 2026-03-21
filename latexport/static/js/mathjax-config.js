@@ -6,7 +6,10 @@ MathJax = {
       // pass if the user had previously turned math rendering off.
       if (localStorage.getItem('latexport-mathjax') === 'false') {
         MathJax.startup.promise = MathJax.startup.promise
-          .then(() => MathJax.typesetClear([document.body]));
+          .then(() => {
+            MathJax.typesetClear([document.body]);
+            MathJax.startup.document.menu?.disable?.();
+          });
       }
     },
   },
