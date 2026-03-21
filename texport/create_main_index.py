@@ -5,7 +5,7 @@ from pathlib import Path
 
 from bs4 import BeautifulSoup
 
-from config import ENCODING, PATTERN, ROOT_DIR, TEMPLATE_PATH
+from .config import ENCODING, PATTERN, ROOT_DIR, TEMPLATE_PATH
 
 logger = logging.getLogger(__name__)
 
