@@ -4,7 +4,13 @@ version = "2026.3.0"
 description = "Convert LaTeX documents to accessible HTML with PDF output"
 authors = [{ name = "Kana Nadarajan", email = "clean.wood0319@fastmail.com" }]
 readme = "README.md"
+license = { text = "MIT" }
 requires-python = ">=3.12"
+
+[project.urls]
+Homepage   = "https://github.com/kalv25/texport"
+Repository = "https://github.com/kalv25/texport"
+Issues     = "https://github.com/kalv25/texport/issues"
 dependencies = [
     "beautifulsoup4>=4.14.3",
 ]
