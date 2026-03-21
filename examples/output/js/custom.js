@@ -49,16 +49,25 @@ async function setMathJaxEnabled(enabled) {
     try {
         await MathJax.startup.promise;
         if (enabled) {
-            MathJax.startup.document.menu?.enable?.();
             await MathJax.typesetPromise([document.body]);
         } else {
             MathJax.typesetClear([document.body]);
-            MathJax.startup.document.menu?.disable?.();
         }
     } catch (_) {
         // MathJax not available or not yet fully initialised
     }
 }
+
+// Block MathJax context menu when math rendering is off.
+// MathJax v4 attaches a contextmenu listener to the assistive-MathML element
+// that survives typesetClear, so we intercept at the capture phase before
+// MathJax's handler runs.
+document.addEventListener('contextmenu', (e) => {
+    if (!isMathJaxEnabled() && e.target.closest('math, mjx-container')) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+    }
+}, true);
 
 // ── Toolbar ───────────────────────────────────────────────────────────
 
@@ -191,10 +200,7 @@ window.addEventListener('load', () => {
     // If MathJax was disabled in a previous session, clear it once it loads
     if (!isMathJaxEnabled() && typeof MathJax !== 'undefined') {
         MathJax.startup.promise
-            .then(() => {
-                MathJax.typesetClear([document.body]);
-                MathJax.startup.document.menu?.disable?.();
-            })
+            .then(() => MathJax.typesetClear([document.body]))
             .catch(() => {});
     }
 });
