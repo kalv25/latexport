@@ -6,6 +6,8 @@ A workflow for converting LaTeX documents to accessible HTML with PDF output.
 
 This project converts `.tex` files into web-ready HTML pages using [LaTeXML](https://dlmf.nist.gov/LaTeXML/), while also generating PDF versions via `pdflatex`. The HTML output is customised with additional CSS, JavaScript, and accessibility enhancements.
 
+Live demos are published at https://kalv25.github.io/latexport/.
+
 ## Project Structure
 
 ```
